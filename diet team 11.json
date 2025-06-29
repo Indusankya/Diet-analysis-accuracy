@@ -1,0 +1,126 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Feb 16 12:34:03 2025
+
+@author: indus
+"""
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import classification_report, accuracy_score
+
+# Load the dataset
+data = pd.read_csv(r'C:\Users\indus\Downloads\diet project\All_Diets.csv')
+
+print("Dataset Columns:", data.columns.tolist())
+print(data.head())
+
+target_variable = 'Diet_type'  
+
+if target_variable not in data.columns:
+    raise ValueError(f"Target variable '{target_variable}' not found in the dataset.")
+
+# Drop unnecessary columns 
+columns_to_drop = ['Recipe_name', 'Cuisine_type', 'Extraction_day', 'Extraction_time']
+existing_columns_to_drop = [col for col in columns_to_drop if col in data.columns]
+
+# Split the data 
+X = data.drop(existing_columns_to_drop + [target_variable], axis=1)  # Features
+y = data[target_variable]  # Target variable
+
+# Print shapes for debugging
+print(f"Features shape: {X.shape}, Target shape: {y.shape}")
+
+# Train and test the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+print("Data split into training and testing sets.")
+
+# Gradient Boosting Classifier with default parameters
+gb_classifier = GradientBoostingClassifier(random_state=42)
+
+# Train the model without print statements
+gb_classifier.fit(X_train, y_train)
+
+# Make predictions
+y_pred = gb_classifier.predict(X_test)
+
+# Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.2f}")
+
+# Print classification report
+print(classification_report(y_test, y_pred))
+
+# Visualization code remains unchanged
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Sample data for visualization
+data = pd.DataFrame({
+    'Diet_type': ['Vegan', 'Vegetarian', 'Keto', 'Paleo', 'Mediterranean'],
+    'Count': [50, 30, 20, 15, 25]
+})
+
+# Bar plot
+plt.figure(figsize=(10, 6))
+sns.barplot(x='Diet_type', y='Count', data=data)
+plt.title('Count of Different Diet Types')
+plt.xlabel('Diet Type')
+plt.ylabel('Count')
+plt.show()
+
+# Pie chart
+plt.figure(figsize=(8, 8))
+plt.pie(data['Count'], labels=data['Diet_type'], autopct='%1.1f%%', startangle=140)
+plt.title('Proportion of Different Diet Types')
+plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+plt.show()
+
+# Sample numerical data
+numerical_data = pd.Series([1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5])
+
+# Sample data
+data = pd.DataFrame({
+    'Weight': [50, 60, 70, 80, 90],
+    'Height': [150, 160, 170, 180, 190]
+})
+
+# Scatter plot
+plt.figure(figsize=(10, 6))
+plt.scatter(data['Weight'], data['Height'], color='blue')
+plt.title('Scatter Plot of Weight vs Height')
+plt.xlabel('Weight (kg)')
+plt.ylabel('Height (cm)')
+plt.show()
+
+# Sample data
+data = pd.DataFrame({
+    'Diet_type': ['Vegan', 'Vegetarian', 'Keto', 'Paleo', 'Mediterranean'],
+    'Calories': [2000, 1800, 2200, 2100, 1900]
+})
+
+# Box plot
+plt.figure(figsize=(10, 6))
+sns.boxplot(x='Diet_type', y='Calories', data=data)
+plt.title('Box Plot of Calories by Diet Type')
+plt.xlabel('Diet Type')
+plt.ylabel('Calories')
+plt.show()
+
+# Sample data
+data = pd.DataFrame({
+    'A': [1, 2, 3, 4, 5],
+    'B': [5, 4, 3, 2, 1],
+    'C': [2, 3, 4, 5, 6],
+    'D': [5, 3, 2, 4, 1]
+})
+
+# Calculate the correlation matrix
+correlation_matrix = data.corr()
+
+# Create a heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f')
+plt.title('Heatmap of Correlation Matrix')
+plt.show()
